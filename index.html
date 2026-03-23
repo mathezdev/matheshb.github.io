@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Mathesh B — Web Developer</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet"/>
+<!-- QR Code library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  :root {
+    --cream: #f5f0e8;
+    --ink: #1a1710;
+    --gold: #b8925a;
+    --gold-light: #d4a96a;
+    --muted: #7a7468;
+    --border: rgba(26,23,16,0.12);
+    --card-bg: #faf8f3;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--cream);
+    color: var(--ink);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.5;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.6rem 4rem;
+    background: rgba(245,240,232,0.88);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-size: 1rem;
+    font-family: 'DM Mono', monospace;
+    font-weight: 300;
+    letter-spacing: 0.12em;
+    color: var(--gold);
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2.4rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 300;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--ink); }
+
+  /* ── HERO ── */
+  #hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 0 4rem;
+    padding-top: 6rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-line {
+    position: absolute;
+    top: 0; bottom: 0; left: 50%;
+    width: 1px;
+    background: var(--border);
+  }
+
+  .hero-text { padding-right: 5rem; }
+
+  .hero-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.2s forwards;
+  }
+
+  .hero-name {
+    font-size: clamp(3.5rem, 6vw, 5.5rem);
+    font-weight: 300;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    margin-bottom: 1rem;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.35s forwards;
+  }
+  .hero-name em { font-style: italic; color: var(--gold); }
+
+  .hero-subtitle {
+    font-size: 1.1rem;
+    font-weight: 300;
+    color: var(--muted);
+    margin-bottom: 2.8rem;
+    max-width: 400px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.5s forwards;
+  }
+
+  .hero-ctas {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.65s forwards;
+    flex-wrap: wrap;
+  }
+
+  .hero-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 1px solid var(--ink);
+    padding-bottom: 0.3rem;
+    transition: color 0.3s, border-color 0.3s;
+  }
+  .hero-cta:hover { color: var(--gold); border-color: var(--gold); }
+  .hero-cta svg { transition: transform 0.3s; }
+  .hero-cta:hover svg { transform: translateX(4px); }
+  .hero-cta.secondary { color: var(--muted); border-color: var(--muted); }
+  .hero-cta.secondary:hover { color: var(--gold); border-color: var(--gold); }
+
+  /* ── HERO VISUAL ── */
+  .hero-visual {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    animation: fadeIn 1.2s 0.6s forwards;
+  }
+
+  /* Outer decorative ring */
+  .hero-circle {
+    width: 340px; height: 340px;
+    border-radius: 50%;
+    border: 1px solid var(--gold-light);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .hero-circle::before {
+    content: '';
+    position: absolute;
+    inset: 20px;
+    border-radius: 50%;
+    border: 1px dashed rgba(184,146,90,0.3);
+    animation: spin 30s linear infinite;
+  }
+
+  .hero-circle::after {
+    content: '';
+    position: absolute;
+    inset: 50px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(184,146,90,0.12), transparent 70%);
+  }
+
+  /* Profile photo — top-left inside circle */
+  .profile-photo-wrap {
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border: 2px solid var(--gold);
+    overflow: hidden;
+    background: var(--card-bg);
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 20px rgba(184,146,90,0.25);
+  }
+
+  .profile-photo-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* Fallback initials shown when no photo */
+  .profile-initials-fallback {
+    font-size: 2rem;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--gold);
+    line-height: 1;
+    user-select: none;
+  }
+
+
+  #profileImg {
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  object-fit: cover;
+    }
+
+#profileImg:hover{
+    transform: scale(1.11);
+}
+
+
+  /* ── SHARED SECTION ── */
+  section { padding: 7rem 4rem; }
+
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1rem;
+  }
+
+  .section-title {
+    font-size: clamp(2.4rem, 4vw, 3.4rem);
+    font-weight: 300;
+    line-height: 1.1;
+    margin-bottom: 3.5rem;
+  }
+  .section-title em { font-style: italic; color: var(--gold); }
+
+  .divider { width: 60px; height: 1px; background: var(--gold); margin: 0 0 3.5rem; }
+
+  /* ── ABOUT ── */
+  #about {
+    border-top: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 6rem;
+    align-items: start;
+  }
+
+  .about-aside { position: sticky; top: 8rem; }
+
+  .about-bio {
+    font-size: 1.15rem;
+    font-weight: 300;
+    line-height: 1.85;
+    color: var(--ink);
+    margin-bottom: 1.6rem;
+  }
+  .about-bio strong { font-weight: 600; color: var(--gold); }
+
+  .about-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.4rem;
+    margin-top: 2.5rem;
+  }
+  .detail-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.3rem;
+  }
+  .detail-value { font-size: 1rem; font-weight: 400; }
+
+  /* ── EDUCATION ── */
+  #education { border-top: 1px solid var(--border); background: var(--card-bg); }
+
+  .edu-card {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 3rem;
+    padding: 2.5rem 0;
+    border-bottom: 1px solid var(--border);
+    align-items: start;
+  }
+  .edu-card:first-of-type { border-top: 1px solid var(--border); }
+
+  .edu-year {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    padding-top: 0.3rem;
+  }
+
+  .edu-degree { font-size: 1.3rem; font-weight: 400; margin-bottom: 0.3rem; }
+  .edu-institution { font-size: 0.95rem; color: var(--muted); font-style: italic; margin-bottom: 0.7rem; }
+
+  .edu-cgpa {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold);
+    border: 1px solid rgba(184,146,90,0.4);
+    padding: 0.25rem 0.7rem;
+  }
+
+  /* ── PROJECT ── */
+  #project { border-top: 1px solid var(--border); }
+
+  .project-feature {
+    border: 1px solid var(--border);
+    padding: 3.5rem;
+    position: relative;
+    overflow: hidden;
+    background: var(--card-bg);
+  }
+  .project-feature::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 4px; height: 100%;
+    background: var(--gold);
+  }
+
+  .project-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.5rem;
+  }
+  .status-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--gold);
+    animation: pulse 1.8s infinite;
+  }
+
+  .project-title {
+    font-size: clamp(1.4rem, 2.5vw, 2rem);
+    font-weight: 300;
+    line-height: 1.3;
+    margin-bottom: 1.4rem;
+    max-width: 640px;
+  }
+  .project-title em { font-style: italic; color: var(--gold); }
+
+  .project-desc {
+    font-size: 1.05rem;
+    font-weight: 300;
+    color: var(--muted);
+    line-height: 1.8;
+    max-width: 580px;
+  }
+
+  .project-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 2rem; }
+  .project-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    border: 1px solid var(--border);
+    padding: 0.3rem 0.7rem;
+    color: var(--muted);
+  }
+
+  /* ── SKILLS ── */
+  #skills { border-top: 1px solid var(--border); }
+
+  .skills-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+  }
+
+  .skills-column h3 {
+    font-size: 1rem;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--gold);
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .skill-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.85rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .skill-name { font-size: 1rem; font-weight: 300; }
+
+  .skill-bar { width: 120px; height: 2px; background: var(--border); overflow: hidden; }
+  .skill-fill {
+    height: 100%;
+    background: var(--gold);
+    width: 0;
+    transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* ── CERTIFICATIONS ── */
+  #certifications { border-top: 1px solid var(--border); background: var(--card-bg); }
+
+  .cert-card {
+    border: 1px solid var(--border);
+    padding: 2.8rem;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 2.5rem;
+    align-items: start;
+    background: white;
+  }
+
+  .cert-icon {
+    width: 56px; height: 56px;
+    border: 1px solid rgba(184,146,90,0.4);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 1.4rem;
+    color: var(--gold);
+  }
+
+
+  .cert-issuer {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.5rem;
+  }
+  .cert-name { font-size: 1.4rem; font-weight: 300; margin-bottom: 0.5rem; }
+  .cert-desc { font-size: 0.95rem; font-weight: 300; color: var(--muted); line-height: 1.7; margin-bottom: 1.2rem; }
+
+  .cert-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(184,146,90,0.4);
+    padding-bottom: 0.2rem;
+    transition: border-color 0.3s, color 0.3s;
+  }
+  .cert-link:hover { color: var(--ink); border-color: var(--ink); }
+
+  /* QR code panel */
+  .cert-qr-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.7rem;
+    flex-shrink: 0;
+  }
+
+  .cert-qr-panel #qrcode {
+    border: 1px solid var(--border);
+    padding: 8px;
+    background: white;
+  }
+
+  .cert-qr-panel #qrcode canvas,
+  .cert-qr-panel #qrcode img {
+    display: block;
+  }
+
+  .cert-qr-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.55rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-align: center;
+  }
+
+  /* ── CONTACT ── */
+  #contact {
+    border-top: 1px solid var(--border);
+    text-align: center;
+    background: var(--ink);
+    color: var(--cream);
+  }
+  #contact .section-title { color: var(--cream); }
+  #contact .section-label { color: var(--gold-light); }
+  #contact .divider { background: var(--gold-light); margin: 0 auto 3.5rem; }
+
+  .contact-intro {
+    font-size: 1.15rem;
+    font-weight: 300;
+    color: rgba(245,240,232,0.65);
+    max-width: 480px;
+    margin: 0 auto 3rem;
+    line-height: 1.8;
+  }
+
+  .contact-links {
+    display: flex;
+    justify-content: center;
+    gap: 3.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 3rem;
+  }
+
+  .contact-item-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(245,240,232,0.35);
+    margin-bottom: 0.5rem;
+  }
+
+  .contact-item a, .contact-item span {
+    font-size: 1.05rem;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--gold-light);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(212,169,106,0.3);
+    padding-bottom: 0.15rem;
+    transition: border-color 0.3s;
+  }
+  .contact-item a:hover { border-color: var(--gold-light); }
+
+  footer {
+    background: var(--ink);
+    border-top: 1px solid rgba(245,240,232,0.08);
+    padding: 2rem 4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  footer span {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    color: rgba(245,240,232,0.25);
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.7); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    nav { padding: 1.2rem 1.8rem; }
+    .nav-links { gap: 1.4rem; }
+    #hero { grid-template-columns: 1fr; padding: 5rem 1.8rem 3rem; }
+    .hero-line { display: none; }
+    .hero-text { padding-right: 0; }
+    .hero-visual { margin-top: 3rem; }
+    section { padding: 5rem 1.8rem; }
+    #about { grid-template-columns: 1fr; gap: 3rem; }
+    .about-aside { position: static; }
+    .edu-card { grid-template-columns: 1fr; gap: 0.5rem; }
+    .skills-layout { grid-template-columns: 1fr; gap: 3rem; }
+    .cert-card { grid-template-columns: 1fr; gap: 1.5rem; }
+    .cert-qr-panel { align-items: flex-start; }
+    .contact-links { gap: 2rem; }
+    footer { flex-direction: column; gap: 0.8rem; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#hero" class="nav-logo">Mathesh</a>
+  <ul class="nav-links">    
+    <li><a href="#about">About</a></li>
+    <li><a href="#education">Education</a></li>
+    <li><a href="#project">Project</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#certifications">Certifications</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-line"></div>
+  <div class="hero-text">
+    <p class="hero-eyebrow">Web Developer &amp; MCA Student</p>
+    <h1 class="hero-name">MATHESH <em>B</em></h1>
+    <p class="hero-subtitle">Crafting clean, responsive web interfaces and exploring mobile development with Flutter — based in Thanjavur, Tamil Nadu.</p>
+    <div class="hero-ctas">
+      <a href="#project" class="hero-cta">
+        View my work
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8H13M9 4L13 8L9 12" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+      <a href="#contact" class="hero-cta secondary">Get in touch</a>
+    </div>
+  </div>
+
+  <div class="hero-visual">
+    <div class="hero-circle">
+
+      <!-- Profile photo — top-left inside the circle -->
+        <!-- <span class="profile-initials-fallback" id="profileFallback"></span> -->
+        <img id="profileImg" src="edi.jpg" alt="Mathesh B">
+      </div>
+
+      <!-- Faint initials watermark in center -->
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-aside">
+    <p class="section-label reveal">About Me</p>
+    <h2 class="section-title reveal">Building the <em>web,</em><br>one line at a time.</h2>
+    <div class="divider reveal"></div>
+  </div>
+  <div>
+    <p class="about-bio reveal">
+      I'm an <strong>MCA student</strong> with a strong foundation in HTML and CSS, passionate about building clean, responsive, and user-friendly web interfaces. I pick up new concepts quickly and enjoy tackling problems with logic and creativity.
+    </p>
+    <p class="about-bio reveal">
+      I'm currently learning <strong>Flutter</strong> for cross-platform mobile development — exploring widgets, layouts, and UI building to broaden my capabilities beyond the web.
+    </p>
+    <p class="about-bio reveal">
+      I'm actively seeking <strong>campus placement opportunities</strong> to launch my career in software development, where I can contribute, grow, and make an impact from day one.
+    </p>
+    <div class="about-details reveal">
+      <div>
+        <div class="detail-label">Based in</div>
+        <div class="detail-value">Thanjavur, Tamil Nadu</div>
+      </div>
+      <div>
+        <div class="detail-label">Currently</div>
+        <div class="detail-value">MCA (2024–2026)</div>
+      </div>
+      <div>
+        <div class="detail-label">Focus</div>
+        <div class="detail-value">Web &amp; Mobile Dev</div>
+      </div>
+      <div>
+        <div class="detail-label">Open to</div>
+        <div class="detail-value">Campus Placements</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EDUCATION -->
+<section id="education">
+  <p class="section-label reveal">Education</p>
+  <h2 class="section-title reveal">Academic <em>journey.</em></h2>
+  <div class="divider reveal"></div>
+
+  <div class="reveal">
+    <div class="edu-card">
+      <div class="edu-year">2024 — 2026</div>
+      <div>
+        <div class="edu-degree">Master of Computer Applications (MCA)</div>
+        <div class="edu-institution">Periyar Maniammai Institute of Science &amp; Technology</div>
+        <span class="edu-cgpa">6.8 CGPA (Last Semester)</span>
+      </div>
+    </div>
+    <div class="edu-card">
+      <div class="edu-year">2021 — 2024</div>
+      <div>
+        <div class="edu-degree">Bachelor of Commerce — B.Com. (CA)</div>
+        <div class="edu-institution">A. Veeriya Vandayar Memorial Sri Pushpam College, Thanjavur</div>
+        <span class="edu-cgpa">6.6 CGPA</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECT -->
+<section id="project">
+  <p class="section-label reveal">Project</p>
+  <h2 class="section-title reveal">Work in <em>progress.</em></h2>
+  <div class="divider reveal"></div>
+
+  <div class="project-feature reveal">
+    <div class="project-status">
+      <span class="status-dot"></span>
+      In Progress
+    </div>
+    <h3 class="project-title">
+      Smart System for <em>Power Line Integrity</em> Monitoring<br>with Auto-Shutdown &amp; EB Authority Notification
+    </h3>
+    <p class="project-desc">
+      A real-time power line monitoring system that detects faults and abnormal conditions. Upon detection, the system automatically cuts off the power supply to prevent accidents, and instantly alerts EB authorities — enabling faster response and ensuring public safety.
+    </p>
+    <div class="project-tags">
+      <span class="project-tag">IoT</span>
+      <span class="project-tag">Real-Time Monitoring</span>
+      <span class="project-tag">Auto-Shutdown</span>
+      <span class="project-tag">Alert System</span>
+      <span class="project-tag">Power Systems</span>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <p class="section-label reveal">Expertise</p>
+  <h2 class="section-title reveal">Tools of the <em>trade.</em></h2>
+  <div class="divider reveal"></div>
+
+  <div class="skills-layout">
+    <div class="skills-column reveal">
+      <h3>Web &amp; Programming</h3>
+      <div class="skill-row">
+        <span class="skill-name">HTML</span>
+        <div class="skill-bar"><div class="skill-fill" data-width="88"></div></div>
+      </div>
+      <div class="skill-row">
+        <span class="skill-name">CSS</span>
+        <div class="skill-bar"><div class="skill-fill" data-width="84"></div></div>
+      </div>
+      <div class="skill-row">
+        <span class="skill-name">SQL</span>
+        <div class="skill-bar"><div class="skill-fill" data-width="72"></div></div>
+      </div>
+      <div class="skill-row">
+        <span class="skill-name">C Language</span>
+        <div class="skill-bar"><div class="skill-fill" data-width="68"></div></div>
+      </div>
+    </div>
+    <div class="skills-column reveal">
+      <h3>Learning &amp; Cloud</h3>
+      <div class="skill-row">
+        <span class="skill-name">Flutter (Basic)</span>
+        <div class="skill-bar"><div class="skill-fill" data-width="42"></div></div>
+      </div>
+      <div class="skill-row">
+        <span class="skill-name">Cloud Computing</span>
+        <div class="skill-bar"><div class="skill-fill" data-width="62"></div></div>
+      </div>
+      <div class="skill-row">
+        <span class="skill-name">Responsive Design</span>
+        <div class="skill-bar"><div class="skill-fill" data-width="82"></div></div>
+      </div>
+      <div class="skill-row">
+        <span class="skill-name">Problem Solving</span>
+        <div class="skill-bar"><div class="skill-fill" data-width="78"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CERTIFICATIONS -->
+<section id="certifications">
+  <p class="section-label reveal">Certifications</p>
+  <h2 class="section-title reveal">Recognised <em>learning.</em></h2>
+  <div class="divider reveal"></div>
+
+  <div class="cert-card reveal">
+    <!-- Icon -->
+    <div class="cert-icon">☁</div>
+
+    <!-- Details -->
+    <div class="cert-body">
+      <div class="cert-issuer">NPTEL / SWAYAM</div>
+      <div class="cert-name">Cloud Computing</div>
+      <p class="cert-desc">Covered core cloud computing concepts including virtualisation, cloud architecture, and scalable computing services through this nationally recognised certification programme.</p>
+      <a class="cert-link"
+         href="https://archive.nptel.ac.in/content/noc/NOC25/SEM2/Ecertificates/106/noc25-cs107/Course/NPTEL25CS107S46990067910203310.pdf"
+         target="_blank" rel="noopener">
+        ↗ View E-Certificate (PDF)
+      </a>
+    </div>
+
+    <!-- QR Code -->
+    <div class="cert-qr-panel">
+      <div id="qrcode"></div>
+      <p class="cert-qr-label">Scan to verify</p>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <p class="section-label reveal">Get In Touch</p>
+  <h2 class="section-title reveal">Let's build something<br><em>together.</em></h2>
+  <div class="divider reveal"></div>
+  <p class="contact-intro reveal">I'm actively looking for campus placement opportunities and open to internships and collaborations. Feel free to reach out — I'd love to connect.</p>
+
+  <div class="contact-links reveal">
+    <div class="contact-item">
+      <div class="contact-item-label">Email</div>
+      <a href="mailto:mrmatheshb@gmail.com">mrmatheshb@gmail.com</a>
+    </div>
+    <div class="contact-item">
+      <div class="contact-item-label">Phone</div>
+      <a href="tel:+916374991107">+91 63749 91107</a>
+    </div>
+    <div class="contact-item">
+      <div class="contact-item-label">LinkedIn</div>
+      <a href="https://www.linkedin.com/in/mrmathesh" target="_blank">/in/mrmathesh</a>
+    </div>
+    <div class="contact-item">
+      <div class="contact-item-label">Location</div>
+      <span>Thanjavur, Tamil Nadu</span>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span>© 2026 Mathesh B. All rights reserved.</span>
+  <span>Designed &amp; built with care.</span>
+</footer>
+
+<script>
+  /* ── Scroll reveal ── */
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        entry.target.querySelectorAll('.skill-fill').forEach(bar => {
+          bar.style.width = bar.dataset.width + '%';
+        });
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  reveals.forEach(el => observer.observe(el));
+
+  /* ── Profile photo upload ── */
+  const photoInput = document.getElementById('photo-input');
+  const profileImg = document.getElementById('profileImg');
+  const profileFallback = document.getElementById('profileFallback');
+
+  photoInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      profileImg.src = ev.target.result;
+      profileImg.style.display = 'block';
+      profileFallback.style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+  });
+
+  /* ── QR Code generation ── */
+  window.addEventListener('load', () => {
+    const certUrl = 'https://archive.nptel.ac.in/noc/Ecertificate/?q=NPTEL25CS107S46990067910203310';
+    new QRCode(document.getElementById('qrcode'), {
+      text: certUrl,
+      width: 110,
+      height: 110,
+      colorDark: '#1a1710',
+      colorLight: '#ffffff',
+      correctLevel: QRCode.CorrectLevel.M
+    });
+  });
+</script>
+</body>
+</html>
